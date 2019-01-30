@@ -1,5 +1,6 @@
 package com.tye.popularmoviesstage1;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -35,8 +36,11 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
 
     @Override
-    public void onListItemClick() {
+    public void onListItemClick(int position) {
+        Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, position);
 
+        startActivity(intent);
     }
 
 

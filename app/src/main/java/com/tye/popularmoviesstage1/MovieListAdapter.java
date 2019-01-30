@@ -3,10 +3,12 @@ package com.tye.popularmoviesstage1;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -53,7 +55,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
 
 
     public interface ListItemClickListener{
-        void onListItemClick();
+        void onListItemClick(int position);
     }
 
 
@@ -77,6 +79,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
 
         @Override
         public void onClick(View view) {
+            mOnClickListener.onListItemClick(getAdapterPosition());
+            Log.v("Adapter Position", "Position: " + getAdapterPosition());
 
         }
     }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:paddingRight="4dp"
+    android:paddingLeft="4dp">
 
     <ImageView
         android:id="@+id/iv_movie_item_image"
