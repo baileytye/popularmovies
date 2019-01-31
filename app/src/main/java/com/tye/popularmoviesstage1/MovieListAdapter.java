@@ -8,9 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ItemViewHolder> {
 
@@ -20,10 +27,19 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
 
     private static int viewHolderCount;
 
+    private static List<Movie> mMovies;
+
+
     public MovieListAdapter(int numberOfItems, ListItemClickListener listener){
         mNumberOfItems = numberOfItems;
         mOnClickListener = listener;
         viewHolderCount = 0;
+    }
+
+
+    public void setMovies(List<Movie> movies){
+        mMovies = movies;
+        mNumberOfItems = mMovies.size();
     }
 
 
@@ -39,13 +55,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
         ItemViewHolder viewHolder = new ItemViewHolder(view);
 
         viewHolderCount++;
+
+
         return viewHolder;
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
-        itemViewHolder.bind();
+        if(mMovies != null)
+            itemViewHolder.bind(mMovies.get(i));
+        Log.v("Binding View", "View bind at " + String.valueOf(i));
     }
 
     @Override
@@ -54,10 +74,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
     }
 
 
+
     public interface ListItemClickListener{
         void onListItemClick(int position);
     }
-
 
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -72,8 +92,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
             itemView.setOnClickListener(this);
         }
 
-        public void bind(){
-            Picasso.get().load("https://i.imgur.com/DvpvklR.png").into(movieImage);
+        public void bind(Movie movie){
+
+            String movieImagePath = "https://image.tmdb.org/t/p/" + "w342" + movie.getPoster_path();
+            Picasso.get().load(movieImagePath).into(movieImage);
         }
 
 
