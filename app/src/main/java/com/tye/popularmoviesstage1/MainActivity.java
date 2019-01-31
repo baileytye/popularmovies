@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private RecyclerView mRecyclerView;
     private MovieListAdapter mAdapter;
     private ProgressBar mProgressBar;
-
     private List<Movie> mMovies;
 
 
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         showProgressBar();
 
+        /*
+         * Use retrofit to get data from movie database
+         */
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -87,7 +91,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     @Override
     public void onListItemClick(int position) {
         Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, position);
+        Gson gson = new Gson();
+        String myJson = gson.toJson(mMovies.get(position));
+
+        intent.putExtra(Intent.EXTRA_TEXT, myJson);
 
         startActivity(intent);
     }
