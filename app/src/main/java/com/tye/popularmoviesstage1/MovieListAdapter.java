@@ -13,12 +13,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ItemViewHolder> {
 
     final private ListItemClickListener mOnClickListener;
@@ -82,9 +76,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        ImageView movieImage;
+        final ImageView movieImage;
 
-        public ItemViewHolder(View itemView){
+        ItemViewHolder(View itemView){
             super(itemView);
 
             movieImage = itemView.findViewById(R.id.iv_movie_item_image);
@@ -92,7 +86,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
             itemView.setOnClickListener(this);
         }
 
-        public void bind(Movie movie){
+        void bind(Movie movie){
 
             String movieImagePath = "https://image.tmdb.org/t/p/" + "w342" + movie.getPoster_path();
             Picasso.get().load(movieImagePath).into(movieImage);

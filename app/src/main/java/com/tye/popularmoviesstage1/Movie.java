@@ -1,9 +1,8 @@
 package com.tye.popularmoviesstage1;
 
 
-public class Movie {
+class Movie {
 
-    private int id;
     private String original_title;
     private String poster_path;
     private String overview;
@@ -11,27 +10,23 @@ public class Movie {
     private String release_date;
 
 
-    public int getId() {
-        return id;
-    }
-
-    public String getOriginal_title() {
+    String getOriginal_title() {
         return original_title;
     }
 
-    public String getPoster_path() {
+    String getPoster_path() {
         return poster_path;
     }
 
-    public String getOverview() {
+    String getOverview() {
         return overview;
     }
 
-    public double getVote_average() {
+    double getVote_average() {
         return vote_average;
     }
 
-    public String getRelease_date() {
+    String getRelease_date() {
         return release_date;
     }
 }

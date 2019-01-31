@@ -5,20 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    TextView mTitleTextView;
-    TextView mReleaseDateTextView;
-    TextView mRatingTextView;
-    TextView mSysnopsysTextView;
-    ImageView mPosterImageView;
+    private TextView mTitleTextView;
+    private TextView mReleaseDateTextView;
+    private TextView mRatingTextView;
+    private TextView mSynopsysTextView;
+    private ImageView mPosterImageView;
 
-    Movie mMovie;
+    private Movie mMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +27,7 @@ public class DetailsActivity extends AppCompatActivity {
         mTitleTextView = findViewById(R.id.tv_details_title);
         mRatingTextView = findViewById(R.id.tv_details_rating);
         mReleaseDateTextView = findViewById(R.id.tv_details_release_date);
-        mSysnopsysTextView = findViewById(R.id.tv_details_synopsys);
+        mSynopsysTextView = findViewById(R.id.tv_details_synopsys);
         mPosterImageView = findViewById(R.id.iv_details_poster);
 
         Intent intent = getIntent();
@@ -44,10 +43,12 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void setDetails(){
+
         String movieImagePath = "https://image.tmdb.org/t/p/" + "w342" + mMovie.getPoster_path();
         Picasso.get().load(movieImagePath).into(mPosterImageView);
+
         mTitleTextView.setText(mMovie.getOriginal_title());
-        mSysnopsysTextView.setText(mMovie.getOverview());
+        mSynopsysTextView.setText(mMovie.getOverview());
         mReleaseDateTextView.setText(mMovie.getRelease_date());
         mRatingTextView.setText(String.valueOf(mMovie.getVote_average()) + "/10");
     }

@@ -1,21 +1,20 @@
 package com.tye.popularmoviesstage1;
 
 
-import com.google.gson.JsonObject;
-
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface TMDBApi {
+interface TMDBApi {
 
-    //TODO: REMOVE BEFORE COMMITING TO GIT
+    //TODO: REMOVE BEFORE COMMITTING TO GIT
     String API_KEY = "";
 
-     String path = "3/movie/popular?api_key=" + API_KEY;
+    @GET("3/movie/popular?api_key=" + API_KEY)
+    Call<Results> getMoviesPopular();
 
-    @GET(path)
-    Call<Results> getMovies();
+    @GET("3/movie/top_rated?api_key=" + API_KEY)
+    Call<Results> getMoviesRatings();
+
+
 
 }
