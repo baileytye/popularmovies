@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+
+    <string name="error">Error: \u0020 </string>
+    <string name="click_to_retry">\nClick to retry</string>
+
     <string name="menu_popular">Popular</string>
     <string name="menu_ratings">Ratings</string>
     <string name="menu_sort_by">Sort By</string>
+
     <string name="image_description_movie_banner">movie banner</string>
+
     <string name="label_release_date">Release Date:</string>
     <string name="label_rating">Rating:</string>
     <string name="label_synopsys">Synopsys:</string>

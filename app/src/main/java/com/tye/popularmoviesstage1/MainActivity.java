@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -25,15 +26,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.ListItemClickListener{
 
+    /**
+     * Tags used for determining which data to fetch
+     */
     private static final int ORDER_POPULAR = 0;
     private static final int ORDER_RATINGS = 1;
 
+    //Start current order none of above to force update data
     private static int currentOrder = 3;
 
     private RecyclerView mRecyclerView;
     private MovieListAdapter mAdapter;
     private ProgressBar mProgressBar;
     private List<Movie> mMovies;
+    private TextView mErrorMessageTextView;
 
 
 
@@ -42,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mErrorMessageTextView = findViewById(R.id.tv_error_message);
         mProgressBar = findViewById(R.id.pb_loading_movies);
         mRecyclerView = findViewById(R.id.rv_movie_list);
 
@@ -94,20 +101,38 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     }
 
     /**
-     * Shows the progress bar and hides the recycler view
+     * Shows the progress bar and hides the recycler view/error message
      */
     private void showProgressBar(){
+        mErrorMessageTextView.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
     /**
-     * Shows the recycler view and hides the progress bar
+     * Shows the recycler view and hides the progress bar/error message
      */
     private void showRecyclerView(){
+        mErrorMessageTextView.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
+
+    /**
+     * Shows error view and hides recycler/progress bar
+     */
+    private void showErrorMessage(String errorCode){
+        mErrorMessageTextView.setText(getString(R.string.error));
+        mErrorMessageTextView.append(errorCode);
+        mErrorMessageTextView.append(getString(R.string.click_to_retry));
+        mErrorMessageTextView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+
+        //Reset order to none to prevent toasts during error
+        currentOrder = 3;
+    }
+
 
 
     /**
@@ -116,20 +141,18 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
      */
     private void retrieveMovieList(int order){
 
-        Log.i("ORDER", "Order in: " + order + ", current order: " + currentOrder);
-
-
+        //Check to see if order requested is same as displayed, and return if so
         if(order == currentOrder){
             Toast.makeText(this,"Already in that order!",Toast.LENGTH_SHORT).show();
             return;
         } else {
             currentOrder = order;
         }
+
         showProgressBar();
 
-        /*
-         * Use retrofit to get data from movie database
-         */
+
+        //Use retrofit to get data from movie database
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -139,21 +162,24 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         Call<Results> call;
 
+
+        //Set call based on order requested
         if (order == ORDER_POPULAR)
             call = tmdbApi.getMoviesPopular();
         else
             call = tmdbApi.getMoviesRatings();
 
-        /*
-         * Retrieve data from server and then tell the adapter that data has changed
-         */
+
+         //Retrieve data from server and then tell the adapter that data has changed
         call.enqueue(new Callback<Results>() {
 
             @Override
             public void onResponse(Call<Results> call, Response<Results> response) {
                 if(!response.isSuccessful()){
 
-                    Log.w("HTTP Request Error", String.valueOf(response.code()));
+                    Log.e("HTTP Request Error", String.valueOf(response.code()));
+                    showErrorMessage(String.valueOf(response.code()));
+                    return;
                 }
                 if (response.body() != null) {
                     mMovies = response.body().getMovies();
@@ -167,9 +193,16 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
             @Override
             public void onFailure(Call<Results> call, Throwable t) {
+                showErrorMessage(t.getMessage());
                 Log.e("TMDB Call Error", t.getMessage());
             }
         });
+    }
+
+
+    public void errorOnClick(View v){
+        currentOrder = 3;
+        retrieveMovieList(ORDER_POPULAR);
     }
 
 
