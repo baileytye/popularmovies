@@ -19,19 +19,23 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
 
     private int mNumberOfItems;
 
-    private static int viewHolderCount;
-
     private static List<Movie> mMovies;
 
+    private final Context mContext;
 
-    public MovieListAdapter(int numberOfItems, ListItemClickListener listener){
+
+    MovieListAdapter(int numberOfItems, ListItemClickListener listener, Context context){
         mNumberOfItems = numberOfItems;
         mOnClickListener = listener;
-        viewHolderCount = 0;
+        mContext = context;
     }
 
 
-    public void setMovies(List<Movie> movies){
+    /**
+     * Setter for data list movies
+     * @param movies data to assign
+     */
+    void setMovies(List<Movie> movies){
         mMovies = movies;
         mNumberOfItems = mMovies.size();
     }
@@ -46,19 +50,16 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem,viewGroup,false);
-        ItemViewHolder viewHolder = new ItemViewHolder(view);
 
-        viewHolderCount++;
-
-
-        return viewHolder;
+        return new ItemViewHolder(view);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
+
         if(mMovies != null)
-            itemViewHolder.bind(mMovies.get(i));
+            itemViewHolder.bind(mMovies.get(i), mContext.getString(R.string.image_url));
         Log.v("Binding View", "View bind at " + String.valueOf(i));
     }
 
@@ -86,9 +87,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
             itemView.setOnClickListener(this);
         }
 
-        void bind(Movie movie){
+        void bind(Movie movie, String imageURL){
 
-            String movieImagePath = "https://image.tmdb.org/t/p/" + "w342" + movie.getPoster_path();
+            String movieImagePath = imageURL + movie.getPoster_path();
             Picasso.get().load(movieImagePath).into(movieImage);
         }
 

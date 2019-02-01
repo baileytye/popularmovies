@@ -13,6 +13,7 @@ class Results {
         return movies;
     }
 
+    @SuppressWarnings("unused")
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
     }

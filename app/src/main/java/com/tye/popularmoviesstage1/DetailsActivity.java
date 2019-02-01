@@ -15,6 +15,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView mReleaseDateTextView;
     private TextView mRatingTextView;
     private TextView mSynopsysTextView;
+
     private ImageView mPosterImageView;
 
     private Movie mMovie;
@@ -42,9 +43,12 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Sets the detail views
+     */
     private void setDetails(){
 
-        String movieImagePath = "https://image.tmdb.org/t/p/" + "w342" + mMovie.getPoster_path();
+        String movieImagePath =  getString(R.string.image_url) + mMovie.getPoster_path();
         Picasso.get().load(movieImagePath).into(mPosterImageView);
 
         mTitleTextView.setText(mMovie.getOriginal_title());

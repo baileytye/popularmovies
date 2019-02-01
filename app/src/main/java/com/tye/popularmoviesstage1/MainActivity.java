@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         mProgressBar = findViewById(R.id.pb_loading_movies);
         mRecyclerView = findViewById(R.id.rv_movie_list);
 
-        mAdapter = new MovieListAdapter(0,this);
+        mAdapter = new MovieListAdapter(0,this, this);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         //Check to see if order requested is same as displayed, and return if so
         if(order == currentOrder){
-            Toast.makeText(this,"Already in that order!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,getString(R.string.already_in_order),Toast.LENGTH_SHORT).show();
             return;
         } else {
             currentOrder = order;
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         //Use retrofit to get data from movie database
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/")
+                .baseUrl(getString(R.string.base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -200,6 +200,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     }
 
 
+    /**
+     * Reset movie order, try to retrieve movies again
+     * @param v clicked view
+     */
     public void errorOnClick(View v){
         currentOrder = 3;
         retrieveMovieList(ORDER_POPULAR);

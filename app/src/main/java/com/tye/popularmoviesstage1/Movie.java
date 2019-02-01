@@ -1,6 +1,7 @@
 package com.tye.popularmoviesstage1;
 
 
+@SuppressWarnings("unused")
 class Movie {
 
     private String original_title;
