@@ -40,23 +40,23 @@ public class Movie implements Parcelable {
         id = i;
     }
 
-    String getOriginal_title() {
+    public String getOriginal_title() {
         return original_title;
     }
 
-    String getPoster_path() {
+    public String getPoster_path() {
         return poster_path;
     }
 
-    String getOverview() {
+    public String getOverview() {
         return overview;
     }
 
-    double getVote_average() {
+    public double getVote_average() {
         return vote_average;
     }
 
-    String getRelease_date() {
+    public String getRelease_date() {
         return release_date;
     }
 
