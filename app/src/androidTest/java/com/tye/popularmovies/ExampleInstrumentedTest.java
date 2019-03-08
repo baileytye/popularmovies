@@ -1,4 +1,4 @@
-package com.tye.popularmoviesstage1;
+package com.tye.popularmovies;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;

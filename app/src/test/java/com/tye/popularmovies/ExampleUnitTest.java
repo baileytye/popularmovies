@@ -1,4 +1,4 @@
-package com.tye.popularmoviesstage1;
+package com.tye.popularmovies;
 
 import org.junit.Test;
 

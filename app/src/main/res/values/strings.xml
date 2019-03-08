@@ -17,9 +17,12 @@
 
     <string name="image_description_movie_banner">movie banner</string>
 
-    <string name="label_release_date">Release Date:</string>
-    <string name="label_rating">Rating:</string>
-    <string name="label_synopsys">Synopsys:</string>
+    <string name="label_release_date">Release Date</string>
+    <string name="label_rating">Rating</string>
+    <string name="label_synopsys">Synopsys</string>
+    <string name="label_trailers">Trailers</string>
+    <string name="label_reviews">Reviews</string>
+
     <string name="added_to_favorites">Added to favorites!</string>
 
 </resources>

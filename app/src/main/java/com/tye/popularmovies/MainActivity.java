@@ -1,4 +1,4 @@
-package com.tye.popularmoviesstage1;
+package com.tye.popularmovies;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,12 +13,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tye.popularmoviesstage1.TMDB.Movie;
-import com.tye.popularmoviesstage1.TMDB.MovieResults;
-import com.tye.popularmoviesstage1.TMDB.Review;
-import com.tye.popularmoviesstage1.TMDB.ReviewResults;
-import com.tye.popularmoviesstage1.TMDB.TMDBApi;
-import com.tye.popularmoviesstage1.TMDB.TrailerResults;
+import com.tye.popularmovies.Adapters.MovieListAdapter;
+import com.tye.popularmovies.TMDB.Movie;
+import com.tye.popularmovies.TMDB.MovieResults;
+import com.tye.popularmovies.TMDB.TMDBApi;
 
 import java.util.List;
 

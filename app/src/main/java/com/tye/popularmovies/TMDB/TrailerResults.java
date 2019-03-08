@@ -1,4 +1,4 @@
-package com.tye.popularmoviesstage1.TMDB;
+package com.tye.popularmovies.TMDB;
 
 import com.google.gson.annotations.SerializedName;
 

@@ -1,4 +1,4 @@
-package com.tye.popularmoviesstage1;
+package com.tye.popularmovies.Adapters;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -10,7 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-import com.tye.popularmoviesstage1.TMDB.Movie;
+import com.tye.popularmovies.R;
+import com.tye.popularmovies.TMDB.Movie;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
     private final Context mContext;
 
 
-    MovieListAdapter(int numberOfItems, ListItemClickListener listener, Context context){
+    public MovieListAdapter(int numberOfItems, ListItemClickListener listener, Context context){
         mNumberOfItems = numberOfItems;
         mOnClickListener = listener;
         mContext = context;
@@ -36,7 +37,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
      * Setter for data list movies
      * @param movies data to assign
      */
-    void setMovies(List<Movie> movies){
+    public void setMovies(List<Movie> movies){
         mMovies = movies;
         mNumberOfItems = mMovies.size();
     }

@@ -1,7 +1,7 @@
-package com.tye.popularmoviesstage1.TMDB;
+package com.tye.popularmovies.TMDB;
 
 
-import com.tye.popularmoviesstage1.BuildConfig;
+import com.tye.popularmovies.BuildConfig;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

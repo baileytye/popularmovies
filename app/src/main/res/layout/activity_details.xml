@@ -12,18 +12,17 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@android:color/background_dark"
         android:isScrollContainer="true">
 
         <ImageView
-            android:contentDescription="@string/image_description_movie_banner"
             android:id="@+id/iv_details_poster"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/image_description_movie_banner"
+            app:layout_constraintStart_toStartOf="@+id/tv_details_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_details_title"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -31,12 +30,12 @@
             android:id="@+id/tv_details_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="TITLE"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textColor="@color/white"
-            android:textSize="32sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -45,72 +44,104 @@
             android:id="@+id/tv_details_release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="release"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/label_release_data"
-            app:layout_constraintStart_toEndOf="@+id/label_release_data"
-            app:layout_constraintTop_toTopOf="@+id/label_release_data" />
+            app:layout_constraintStart_toStartOf="@+id/label_release_data"
+            app:layout_constraintTop_toBottomOf="@+id/label_release_data" />
 
         <TextView
             android:id="@+id/tv_details_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="1/10"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/label_rating"
-            app:layout_constraintStart_toEndOf="@+id/label_rating"
-            app:layout_constraintTop_toTopOf="@+id/label_rating" />
+            app:layout_constraintStart_toStartOf="@+id/label_rating"
+            app:layout_constraintTop_toBottomOf="@+id/label_rating" />
 
         <TextView
             android:id="@+id/tv_details_synopsys"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="24dp"
             android:layout_marginTop="8dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginBottom="24dp"
-            android:background="@android:color/background_dark"
             android:scrollbars="vertical"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tv_details_title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/label_synopsys"
             app:layout_constraintTop_toBottomOf="@+id/label_synopsys" />
 
         <TextView
             android:id="@+id/label_release_data"
+            style="@style/detailsLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/label_release_date"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/label_rating"
-            app:layout_constraintStart_toEndOf="@+id/iv_details_poster" />
+            app:layout_constraintStart_toEndOf="@+id/iv_details_poster"
+            app:layout_constraintTop_toTopOf="@+id/iv_details_poster" />
 
         <TextView
             android:id="@+id/label_rating"
+            style="@style/detailsLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/label_rating"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_details_poster"
-            app:layout_constraintStart_toStartOf="@+id/label_release_data" />
+            app:layout_constraintStart_toStartOf="@+id/label_release_data"
+            app:layout_constraintTop_toBottomOf="@+id/tv_details_release_date" />
 
         <TextView
             android:id="@+id/label_synopsys"
+            style="@style/detailsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_synopsys"
+            app:layout_constraintStart_toStartOf="@+id/iv_details_poster"
+            app:layout_constraintTop_toBottomOf="@+id/iv_details_poster" />
+
+        <TextView
+            android:id="@+id/label_reviews"
+            style="@style/detailsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_reviews"
+            app:layout_constraintStart_toStartOf="@+id/tv_details_synopsys"
+            app:layout_constraintTop_toBottomOf="@+id/tv_details_synopsys" />
+
+        <TextView
+            android:id="@+id/tv_details_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/label_synopsys"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/iv_details_poster"
-            app:layout_constraintTop_toBottomOf="@+id/iv_details_poster" />
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/label_reviews"
+            app:layout_constraintTop_toBottomOf="@+id/label_reviews" />
+
+        <TextView
+            android:id="@+id/label_trailers"
+            style="@style/detailsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_trailers"
+            app:layout_constraintStart_toStartOf="@+id/tv_details_review"
+            app:layout_constraintTop_toBottomOf="@+id/tv_details_review" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_details_trailers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/tv_details_synopsys"
+            app:layout_constraintStart_toStartOf="@+id/label_trailers"
+            app:layout_constraintTop_toBottomOf="@+id/label_trailers"
+            tools:listitem="@layout/trailer_item" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
