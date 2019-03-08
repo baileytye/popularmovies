@@ -18,6 +18,7 @@ import com.tye.popularmoviesstage1.TMDB.MovieResults;
 import com.tye.popularmoviesstage1.TMDB.Review;
 import com.tye.popularmoviesstage1.TMDB.ReviewResults;
 import com.tye.popularmoviesstage1.TMDB.TMDBApi;
+import com.tye.popularmoviesstage1.TMDB.TrailerResults;
 
 import java.util.List;
 

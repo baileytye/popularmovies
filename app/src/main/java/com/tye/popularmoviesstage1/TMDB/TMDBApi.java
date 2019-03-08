@@ -20,6 +20,9 @@ public interface TMDBApi {
     @GET("3/movie/{id}/reviews?api_key=" + API_KEY)
     Call<ReviewResults> getReviews(@Path("id") int id);
 
+    @GET("3/movie/{id}/videos?api_key=" + API_KEY)
+    Call<TrailerResults> getTrailers(@Path("id") int id);
+
 
 
 }

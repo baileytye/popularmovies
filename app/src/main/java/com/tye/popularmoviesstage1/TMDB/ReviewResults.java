@@ -17,6 +17,4 @@ public class ReviewResults {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
-
-
 }

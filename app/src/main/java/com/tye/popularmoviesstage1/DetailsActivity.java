@@ -94,4 +94,9 @@ public class DetailsActivity extends AppCompatActivity {
         mReleaseDateTextView.setText(mMovie.getRelease_date());
         mRatingTextView.setText(String.valueOf(mMovie.getVote_average()) + "/10");
     }
+
+
+
+
+
 }
