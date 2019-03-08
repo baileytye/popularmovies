@@ -3,13 +3,19 @@ package com.tye.popularmoviesstage1;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -44,6 +50,37 @@ public class DetailsActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_details, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_favorite);
+        final ContextThemeWrapper wrapper  = new ContextThemeWrapper(this, R.style.unfavorite);
+        final Drawable star = VectorDrawableCompat.create(getResources(), R.drawable.ic_baseline_star_rate_18px, wrapper.getTheme());
+        item.setIcon(star);
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+
+            case R.id.menu_favorite:
+                final ContextThemeWrapper wrapper  = new ContextThemeWrapper(this, R.style.favorite);
+                final Drawable star = VectorDrawableCompat.create(getResources(), R.drawable.ic_baseline_star_rate_18px, wrapper.getTheme());
+                item.setIcon(star);
+                Toast.makeText(this,getString(R.string.added_to_favorites),Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 

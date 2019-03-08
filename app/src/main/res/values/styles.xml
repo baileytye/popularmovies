@@ -10,4 +10,14 @@
     </style>
 
 
+
+    <style name="unfavorite" >
+        <item name="star_color">#ffffff</item>
+    </style>
+
+    <style name="favorite">
+        <item name="star_color">#ffee58</item>
+    </style>
+
+
 </resources>
