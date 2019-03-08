@@ -17,6 +17,8 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,6 +27,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.ListItemClickListener{
+
+
+    public static final String EXTRA_MOVIE = "extra-movie";
 
     /**
      * Tags used for determining which data to fetch
@@ -35,22 +40,20 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     //Start current order none of above to force update data
     private static int currentOrder = 3;
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
+    @BindView(R.id.pb_loading_movies) ProgressBar mProgressBar;
+    @BindView(R.id.tv_error_message) TextView mErrorMessageTextView;
+
+
     private MovieListAdapter mAdapter;
-    private ProgressBar mProgressBar;
     private List<Movie> mMovies;
-    private TextView mErrorMessageTextView;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mErrorMessageTextView = findViewById(R.id.tv_error_message);
-        mProgressBar = findViewById(R.id.pb_loading_movies);
-        mRecyclerView = findViewById(R.id.rv_movie_list);
+        ButterKnife.bind(this);
 
         mAdapter = new MovieListAdapter(0,this, this);
 
@@ -62,6 +65,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         retrieveMovieList(ORDER_POPULAR);
     }
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        currentOrder = 3;
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -91,12 +101,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     @Override
     public void onListItemClick(int position) {
+
         Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-        Gson gson = new Gson();
-        String myJson = gson.toJson(mMovies.get(position));
 
-        intent.putExtra(Intent.EXTRA_TEXT, myJson);
-
+        intent.putExtra(EXTRA_MOVIE, mMovies.get(position));
         startActivity(intent);
     }
 

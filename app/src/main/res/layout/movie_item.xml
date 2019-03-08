@@ -8,6 +8,7 @@
 
     <ImageView
         android:contentDescription="@string/image_description_movie_banner"
+        android:adjustViewBounds="true"
         android:id="@+id/iv_movie_item_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
