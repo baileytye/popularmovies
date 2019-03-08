@@ -2,13 +2,11 @@ package com.tye.popularmoviesstage1;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -17,10 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-
-import java.util.Objects;
+import com.tye.popularmoviesstage1.TMDB.Movie;
 
 public class DetailsActivity extends AppCompatActivity {
 

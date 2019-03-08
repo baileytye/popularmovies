@@ -1,4 +1,4 @@
-package com.tye.popularmoviesstage1;
+package com.tye.popularmoviesstage1.TMDB;
 
 
 import android.os.Parcel;

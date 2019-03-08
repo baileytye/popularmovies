@@ -1,10 +1,10 @@
-package com.tye.popularmoviesstage1;
+package com.tye.popularmoviesstage1.TMDB;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-class Results {
+public class MovieResults {
 
     @SerializedName("results")
     private List<Movie> movies;

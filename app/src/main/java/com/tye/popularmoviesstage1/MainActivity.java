@@ -13,7 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.tye.popularmoviesstage1.TMDB.Movie;
+import com.tye.popularmoviesstage1.TMDB.MovieResults;
+import com.tye.popularmoviesstage1.TMDB.Review;
+import com.tye.popularmoviesstage1.TMDB.ReviewResults;
+import com.tye.popularmoviesstage1.TMDB.TMDBApi;
 
 import java.util.List;
 
@@ -162,14 +166,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         //Use retrofit to get data from movie database
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.base_url))
+                .baseUrl(getString(R.string.base_url_movies))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         TMDBApi tmdbApi = retrofit.create(TMDBApi.class);
 
-        Call<Results> call;
-
+        Call<MovieResults> call;
 
         //Set call based on order requested
         if (order == ORDER_POPULAR)
@@ -179,10 +182,10 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
 
          //Retrieve data from server and then tell the adapter that data has changed
-        call.enqueue(new Callback<Results>() {
+        call.enqueue(new Callback<MovieResults>() {
 
             @Override
-            public void onResponse(Call<Results> call, Response<Results> response) {
+            public void onResponse(Call<MovieResults> call, Response<MovieResults> response) {
                 if(!response.isSuccessful()){
 
                     Log.e("HTTP Request Error", String.valueOf(response.code()));
@@ -200,11 +203,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             }
 
             @Override
-            public void onFailure(Call<Results> call, Throwable t) {
+            public void onFailure(Call<MovieResults> call, Throwable t) {
                 showErrorMessage(t.getMessage());
                 Log.e("TMDB Call Error", t.getMessage());
             }
         });
+
     }
 
 

@@ -5,7 +5,7 @@
     <string name="error">Error: \u0020 </string>
     <string name="click_to_retry">\nClick to retry</string>
 
-    <string name="base_url">https://api.themoviedb.org/</string>
+    <string name="base_url_movies">https://api.themoviedb.org/</string>
     <string name="image_url">https://image.tmdb.org/t/p/w342</string>
     <string name="already_in_order">Already in that order!</string>
 

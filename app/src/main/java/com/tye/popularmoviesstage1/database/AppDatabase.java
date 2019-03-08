@@ -1,6 +1,6 @@
 package com.tye.popularmoviesstage1.database;
 
-import com.tye.popularmoviesstage1.Movie;
+import com.tye.popularmoviesstage1.TMDB.Movie;
 import android.content.Context;
 import android.util.Log;
 
