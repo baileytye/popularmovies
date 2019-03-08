@@ -10,7 +10,7 @@
     tools:context=".DetailsActivity">
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/background_dark"
@@ -111,6 +111,6 @@
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/iv_details_poster"
             app:layout_constraintTop_toBottomOf="@+id/iv_details_poster" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
