@@ -6,8 +6,7 @@ import retrofit2.http.GET;
 
 interface TMDBApi {
 
-    //TODO: ADD API KEY HERE
-    String API_KEY = "";
+    String API_KEY = BuildConfig.API_KEY;
 
     @GET("3/movie/popular?api_key=" + API_KEY)
     Call<Results> getMoviesPopular();
