@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="details_activity_label">Details</string>
+    <string name="reviews_activity_label">Reviews</string>
 
     <string name="error">Error: \u0020 </string>
     <string name="click_to_retry">\nClick to retry</string>
@@ -24,5 +25,6 @@
     <string name="label_reviews">Reviews</string>
 
     <string name="added_to_favorites">Added to favorites!</string>
+    <string name="label_review_author">A review by</string>
 
 </resources>

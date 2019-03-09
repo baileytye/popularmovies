@@ -19,14 +19,16 @@ import butterknife.ButterKnife;
 
 public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemViewHolder> {
 
+    final private TrailersAdapter.ListItemClickListener mOnClickListener;
     private int mNumberOfItems;
     private static List<Trailer> mTrailers;
     private final Context mContext;
 
 
-    public TrailersAdapter(int mNumberOfItems, Context mContext) {
+    public TrailersAdapter(int mNumberOfItems, Context mContext, ListItemClickListener listItemClickListener) {
         this.mNumberOfItems = mNumberOfItems;
         this.mContext = mContext;
+        this.mOnClickListener = listItemClickListener;
     }
 
 
@@ -52,8 +54,13 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemVi
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         if(mTrailers != null){
-            holder.bind();
+            holder.bind(position);
         }
+    }
+
+
+    public interface ListItemClickListener{
+        void onListItemClick(int position);
     }
 
     @Override
@@ -75,11 +82,11 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemVi
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(view.getContext(),"Clicked",Toast.LENGTH_SHORT).show();
+            mOnClickListener.onListItemClick(getAdapterPosition());
         }
 
-        public void bind() {
-            mTrailerTitle.setText("Test setting the title");
+        public void bind(int position) {
+            mTrailerTitle.setText(mTrailers.get(position).getName());
         }
     }
 }
