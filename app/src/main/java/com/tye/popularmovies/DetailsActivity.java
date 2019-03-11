@@ -19,6 +19,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -29,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Picasso;
 import com.tye.popularmovies.Adapters.TrailersAdapter;
 import com.tye.popularmovies.Models.Movie;
@@ -41,14 +43,18 @@ import com.tye.popularmovies.database.FavoriteMoviesDao;
 
 import java.util.List;
 
+//TODO: add bundle save state to save if its a favorite or not to prevent recalling database on rotation
 public class DetailsActivity extends AppCompatActivity implements TrailersAdapter.ListItemClickListener{
 
+    private static final String TAG = "DetailsActivity";
     @BindView(R.id.tv_details_title) TextView mTitleTextView;
     @BindView(R.id.tv_details_release_date) TextView mReleaseDateTextView;
     @BindView(R.id.tv_details_rating) TextView mRatingTextView;
     @BindView(R.id.tv_details_synopsys) TextView mSynopsysTextView;
     @BindView(R.id.tv_details_error_message) TextView mErrorMessageTextView;
-    @BindView(R.id.tv_details_review) TextView mReviewTextView;
+    @BindView(R.id.tv_details_review) ExpandableTextView mReviewTextView;
+    //@BindView(R.id.tv_read_more_button) TextView mReadMoreTextView;
+    @BindView(R.id.label_see_more) TextView mSeeMoreReviewsTextView;
 
     @BindView(R.id.pb_loading_trailers) ProgressBar mProgressBar;
 
@@ -96,9 +102,9 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mRecyclerView.setAdapter(mAdapter);
 
 
-
-        retrieveTrailers();
         retrieveReviews();
+        retrieveTrailers();
+
 
     }
 
@@ -136,9 +142,15 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
                 if (response.body() != null) {
                     mReviews = response.body().getReviews();
                     if(!mReviews.isEmpty()){
-                        mReviewTextView.setText(mReviews.get(0).getContent());
+                        String reviewText = "Review by " + mReviews.get(0).getAuthor() + ":\n"  + mReviews.get(0).getContent();
+                        mReviewTextView.setText(reviewText);
+                        if(mReviews.size() > 1){
+                            mSeeMoreReviewsTextView.setVisibility(View.VISIBLE);
+                        }
+
                     } else {
                         mReviewTextView.setText(getString(R.string.details_no_reviews_yet));
+                        mSeeMoreReviewsTextView.setVisibility(View.INVISIBLE);
                     }
                     //showRecyclerView();
 
@@ -296,6 +308,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
+
     @Override
     public void onListItemClick(int position) {
         String url = "https://www.youtube.com/watch?v=" + mTrailers.get(position).getKey();
@@ -327,6 +340,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
         @Override
         protected Boolean doInBackground(Movie... movies) {
+            Log.d("Database: ", "Loading favorite message by ID from database");
             return (favoriteMoviesDao.loadFavoriteMovieById(movies[0].getId()) != null);
         }
 

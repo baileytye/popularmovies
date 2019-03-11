@@ -19,9 +19,6 @@ public class MovieRepository {
 
     private LiveData<List<Movie>> favoriteMovies;
 
-    private Movie favorite;
-
-
     public MovieRepository(Application application){
         AppDatabase database = AppDatabase.getInstance(application.getApplicationContext());
         favoriteMoviesDao = database.favoriteMoviesDao();
@@ -29,7 +26,7 @@ public class MovieRepository {
     }
 
     public LiveData<List<Movie>> getFavoriteMovies(){
-        Log.d("DATABASE ", "All data retrieved from database");
+        Log.d("Repo ", "All data retrieved from database");
         return favoriteMovies;
     }
 
@@ -38,14 +35,16 @@ public class MovieRepository {
 
     public void insert(final Movie movie){
         new InsertAsyncTask().execute(movie);
-        Log.d("DATABASE ", "Movie " + movie.getOriginal_title() + " inserted into database ");
+        Log.d("Repo ", "Movie " + movie.getOriginal_title() + " inserted into database ");
     }
 
     public void remove(final Movie movie){
+        Log.d("Repo ", "Movie " + movie.getOriginal_title() + " removed from database ");
         new RemoveAsyncTask().execute(movie);
     }
 
     public void deleteTable(){
+        Log.d("Repo ", "Database cleared ");
         new ClearAsyncTask().execute();
     }
 
