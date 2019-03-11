@@ -39,7 +39,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
      */
     public void setMovies(List<Movie> movies){
         mMovies = movies;
-        mNumberOfItems = mMovies.size();
+        if(mMovies != null){
+            mNumberOfItems = mMovies.size();
+        } else {
+            mNumberOfItems = 0;
+        }
     }
 
 

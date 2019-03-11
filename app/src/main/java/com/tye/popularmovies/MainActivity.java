@@ -5,7 +5,6 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.lifecycle.Observer;
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +25,6 @@ import com.tye.popularmovies.Models.MovieResults;
 
 import java.util.List;
 
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -40,7 +37,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.ListItemClickListener{
 
 
-    public static final String EXTRA_MOVIE = "extra-movie";
 
     // Constant for logging
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -53,21 +49,19 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private static final int ORDER_FAVORITES = 2;
     private static final int ORDER_NONE = 3;
 
-
-    private static final String CURRENT_ORDER_EXTRA = "current-order-extra";
+    public static final String EXTRA_MOVIE = "extra-movie";
+    private static final String EXTRA_CURRENT_ORDER = "current-order-extra";
 
     //Start current order none of above to force update data
-    private static int currentOrder = ORDER_NONE;
+    private static int currentOrder;
 
     @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
     @BindView(R.id.pb_loading_movies) ProgressBar mProgressBar;
     @BindView(R.id.tv_error_message) TextView mErrorMessageTextView;
 
-
     private MovieListAdapter mAdapter;
     private List<Movie> mMovies;
     private List<Movie> mFavorites;
-
     private MainViewModel mMainViewModel;
 
     @Override
@@ -84,32 +78,26 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
 
-        retrieveMovieList(ORDER_POPULAR);
-        setupViewModel();
-    }
+        currentOrder = ORDER_NONE;
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        setupViewModel();
+
         if(savedInstanceState != null) {
-            if (savedInstanceState.containsKey(CURRENT_ORDER_EXTRA)) {
-                retrieveMovieList(savedInstanceState.getInt(CURRENT_ORDER_EXTRA));
+            if (savedInstanceState.containsKey(EXTRA_CURRENT_ORDER)) {
+                retrieveMovieList(savedInstanceState.getInt(EXTRA_CURRENT_ORDER));
             }
         } else {
             retrieveMovieList(ORDER_POPULAR);
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(CURRENT_ORDER_EXTRA, currentOrder);
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_CURRENT_ORDER, currentOrder);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){

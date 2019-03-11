@@ -56,13 +56,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
     @BindView(R.id.rv_details_trailers) RecyclerView mRecyclerView;
 
-    MenuItem favoritesMenuItem;
-
+    private MenuItem mFavoritesMenuItem;
     private Movie mMovie;
     private List<Review> mReviews;
     private List<Trailer> mTrailers;
     private TrailersAdapter mAdapter;
-
     private MovieRepository mMovieRepository;
 
     public static final String EXTRA_ID = "extra_id";
@@ -163,13 +161,12 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_details, menu);
 
-        favoritesMenuItem = menu.findItem(R.id.menu_details_favorite);
+        mFavoritesMenuItem = menu.findItem(R.id.menu_details_favorite);
 
         new CheckFavoriteTask(getApplication()).execute(mMovie);
 
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -200,14 +197,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         return super.onOptionsItemSelected(item);
     }
 
-
     public void setFavoriteIconColor(int colorId){
-
         final ContextThemeWrapper wrapper  = new ContextThemeWrapper(this, colorId);
         final Drawable star = VectorDrawableCompat.create(getResources(), R.drawable.ic_baseline_star_rate_18px, wrapper.getTheme());
-        favoritesMenuItem.setIcon(star);
+        mFavoritesMenuItem.setIcon(star);
     }
-
 
     /**
      * Sets the detail views
@@ -222,7 +216,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mReleaseDateTextView.setText(mMovie.getRelease_date());
         mRatingTextView.setText(String.valueOf(mMovie.getVote_average()) + "/10");
     }
-
 
     private void retrieveTrailers(){
 
@@ -256,6 +249,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
                     mAdapter.setTrailers(mTrailers);
                     mAdapter.notifyDataSetChanged();
                     showRecyclerView();
+                    //TODO: Add if there are no trailers show message
 
                 } else {
                     Log.e("Movie List Error", "Movie list is null");
@@ -271,7 +265,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
 
     }
-
 
     /**
      * Shows the progress bar and hides the recycler view/error message
@@ -303,7 +296,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
-
     @Override
     public void onListItemClick(int position) {
         String url = "https://www.youtube.com/watch?v=" + mTrailers.get(position).getKey();
@@ -317,16 +309,12 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
     }
 
-
-
-
     public void startReviewActivity(View view){
         Intent intent = new Intent(this, ReviewsActivity.class);
         intent.putExtra(EXTRA_ID, mMovie.getId());
 
         startActivity(intent);
     }
-
 
     private class CheckFavoriteTask extends AsyncTask<Movie, Void, Boolean>{
 
