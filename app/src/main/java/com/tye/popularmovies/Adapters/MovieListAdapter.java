@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.tye.popularmovies.R;
-import com.tye.popularmovies.TMDB.Movie;
+import com.tye.popularmovies.Models.Movie;
 
 import java.util.List;
 

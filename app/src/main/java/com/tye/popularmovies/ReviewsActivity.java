@@ -3,7 +3,6 @@ package com.tye.popularmovies;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.Action;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -13,17 +12,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.app.ActionBar;
-import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.tye.popularmovies.Adapters.ReviewsAdapter;
-import com.tye.popularmovies.TMDB.Review;
-import com.tye.popularmovies.TMDB.ReviewResults;
-import com.tye.popularmovies.TMDB.TMDBApi;
-import com.tye.popularmovies.TMDB.TrailerResults;
+import com.tye.popularmovies.Models.Review;
+import com.tye.popularmovies.Models.ReviewResults;
 
 import java.util.List;
 

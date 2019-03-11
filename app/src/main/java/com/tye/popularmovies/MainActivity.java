@@ -1,11 +1,19 @@
 package com.tye.popularmovies;
 
 import android.content.Intent;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,12 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tye.popularmovies.Adapters.MovieListAdapter;
-import com.tye.popularmovies.TMDB.Movie;
-import com.tye.popularmovies.TMDB.MovieResults;
-import com.tye.popularmovies.TMDB.TMDBApi;
+import com.tye.popularmovies.Models.Movie;
+import com.tye.popularmovies.Models.MovieResults;
 
 import java.util.List;
 
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -34,14 +42,22 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     public static final String EXTRA_MOVIE = "extra-movie";
 
+    // Constant for logging
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     /**
      * Tags used for determining which data to fetch
      */
     private static final int ORDER_POPULAR = 0;
     private static final int ORDER_RATINGS = 1;
+    private static final int ORDER_FAVORITES = 2;
+    private static final int ORDER_NONE = 3;
+
+
+    private static final String CURRENT_ORDER_EXTRA = "current-order-extra";
 
     //Start current order none of above to force update data
-    private static int currentOrder = 3;
+    private static int currentOrder = ORDER_NONE;
 
     @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
     @BindView(R.id.pb_loading_movies) ProgressBar mProgressBar;
@@ -50,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private MovieListAdapter mAdapter;
     private List<Movie> mMovies;
+    private List<Movie> mFavorites;
+
+    private MainViewModel mMainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +85,30 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         mRecyclerView.setAdapter(mAdapter);
 
         retrieveMovieList(ORDER_POPULAR);
+        setupViewModel();
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            if (savedInstanceState.containsKey(CURRENT_ORDER_EXTRA)) {
+                retrieveMovieList(savedInstanceState.getInt(CURRENT_ORDER_EXTRA));
+            }
+        } else {
+            retrieveMovieList(ORDER_POPULAR);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(CURRENT_ORDER_EXTRA, currentOrder);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onStop() {
         super.onStop();
-        currentOrder = 3;
-
     }
 
     @Override
@@ -91,14 +126,23 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
             case R.id.menu_popular:
                 retrieveMovieList(ORDER_POPULAR);
+                getSupportActionBar().setTitle("Popular Movies");
                 break;
             case R.id.menu_ratings:
                 retrieveMovieList(ORDER_RATINGS);
+                getSupportActionBar().setTitle("Highest Rated Movies");
                 break;
+            case R.id.menu_favorites:
+                retrieveMovieList(ORDER_FAVORITES);
+                getSupportActionBar().setTitle("Favorite Movies");
+                break;
+            case R.id.menu_clear_favorites:
+                mMainViewModel.deleteTable();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
 
 
@@ -107,9 +151,31 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
 
-        intent.putExtra(EXTRA_MOVIE, mMovies.get(position));
+        if(currentOrder == ORDER_FAVORITES){
+            intent.putExtra(EXTRA_MOVIE, mFavorites.get(position));
+        } else{
+            intent.putExtra(EXTRA_MOVIE, mMovies.get(position));
+        }
         startActivity(intent);
     }
+
+
+    private void setupViewModel() {
+        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mMainViewModel.getFavoriteMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> favoriteMovies) {
+                mFavorites = favoriteMovies;
+                Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
+                if(currentOrder == ORDER_FAVORITES) {
+                    mAdapter.setMovies(favoriteMovies);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+    }
+
 
     /**
      * Shows the progress bar and hides the recycler view/error message
@@ -161,6 +227,14 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
 
         showProgressBar();
+
+        if(order == ORDER_FAVORITES){
+            mAdapter.setMovies(mFavorites);
+            mAdapter.notifyDataSetChanged();
+            currentOrder = ORDER_FAVORITES;
+            showRecyclerView();
+            return;
+        }
 
 
         //Use retrofit to get data from movie database

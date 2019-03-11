@@ -1,6 +1,7 @@
 package com.tye.popularmovies;
 
 import android.app.ActionBar;
+import android.app.Application;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,8 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -30,10 +31,13 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.tye.popularmovies.Adapters.TrailersAdapter;
-import com.tye.popularmovies.TMDB.Movie;
-import com.tye.popularmovies.TMDB.TMDBApi;
-import com.tye.popularmovies.TMDB.Trailer;
-import com.tye.popularmovies.TMDB.TrailerResults;
+import com.tye.popularmovies.Models.Movie;
+import com.tye.popularmovies.Models.Review;
+import com.tye.popularmovies.Models.ReviewResults;
+import com.tye.popularmovies.Models.Trailer;
+import com.tye.popularmovies.Models.TrailerResults;
+import com.tye.popularmovies.database.AppDatabase;
+import com.tye.popularmovies.database.FavoriteMoviesDao;
 
 import java.util.List;
 
@@ -44,6 +48,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
     @BindView(R.id.tv_details_rating) TextView mRatingTextView;
     @BindView(R.id.tv_details_synopsys) TextView mSynopsysTextView;
     @BindView(R.id.tv_details_error_message) TextView mErrorMessageTextView;
+    @BindView(R.id.tv_details_review) TextView mReviewTextView;
 
     @BindView(R.id.pb_loading_trailers) ProgressBar mProgressBar;
 
@@ -51,9 +56,14 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
     @BindView(R.id.rv_details_trailers) RecyclerView mRecyclerView;
 
+    MenuItem favoritesMenuItem;
+
     private Movie mMovie;
+    private List<Review> mReviews;
     private List<Trailer> mTrailers;
     private TrailersAdapter mAdapter;
+
+    private MovieRepository mMovieRepository;
 
     public static final String EXTRA_ID = "extra_id";
 
@@ -63,6 +73,8 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         setContentView(R.layout.activity_details);
 
         ButterKnife.bind(this);
+
+        mMovieRepository = new MovieRepository(getApplication());
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -75,6 +87,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
             if(intent.hasExtra(MainActivity.EXTRA_MOVIE)){
                 mMovie = intent.getParcelableExtra(MainActivity.EXTRA_MOVIE);
                 setDetails();
+
             }
         }
 
@@ -83,17 +96,76 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
+
+
+
         retrieveTrailers();
+        retrieveReviews();
+
+    }
+
+    private void retrieveReviews(){
+
+        int id = mMovie.getId();
+
+        //showProgressBar();
+
+        //Use retrofit to get data from movie database
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.base_url_movies))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        TMDBApi tmdbApi = retrofit.create(TMDBApi.class);
+
+        if(id == -1){
+            return;
+        }
+        Call<ReviewResults> call = tmdbApi.getReviews(id);
+
+
+        //Retrieve data from server and then tell the adapter that data has changed
+        call.enqueue(new Callback<ReviewResults>() {
+
+            @Override
+            public void onResponse(Call<ReviewResults> call, Response<ReviewResults> response) {
+                if(!response.isSuccessful()){
+
+                    Log.e("HTTP Request Error", String.valueOf(response.code()));
+                    //showErrorMessage(String.valueOf(response.code()));
+                    return;
+                }
+                if (response.body() != null) {
+                    mReviews = response.body().getReviews();
+                    if(!mReviews.isEmpty()){
+                        mReviewTextView.setText(mReviews.get(0).getContent());
+                    } else {
+                        mReviewTextView.setText(getString(R.string.details_no_reviews_yet));
+                    }
+                    //showRecyclerView();
+
+                } else {
+                    Log.e("Movie List Error", "Movie list is null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResults> call, Throwable t) {
+                //showErrorMessage(t.getMessage());
+                Log.e("TMDB Call Error", t.getMessage());
+            }
+        });
+
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_details, menu);
 
-        MenuItem item = menu.findItem(R.id.menu_favorite);
-        final ContextThemeWrapper wrapper  = new ContextThemeWrapper(this, R.style.unfavorite);
-        final Drawable star = VectorDrawableCompat.create(getResources(), R.drawable.ic_baseline_star_rate_18px, wrapper.getTheme());
-        item.setIcon(star);
+        favoritesMenuItem = menu.findItem(R.id.menu_details_favorite);
+
+        new CheckFavoriteTask(getApplication()).execute(mMovie);
 
         return true;
     }
@@ -106,11 +178,19 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
         switch (itemId) {
 
-            case R.id.menu_favorite:
-                final ContextThemeWrapper wrapper  = new ContextThemeWrapper(this, R.style.favorite);
-                final Drawable star = VectorDrawableCompat.create(getResources(), R.drawable.ic_baseline_star_rate_18px, wrapper.getTheme());
-                item.setIcon(star);
-                Toast.makeText(this,getString(R.string.added_to_favorites),Toast.LENGTH_SHORT).show();
+            case R.id.menu_details_favorite:
+                if(mMovie.isFavorite()){
+                    mMovie.setFavorite(false);
+                    setFavoriteIconColor(R.style.white);
+                    Toast.makeText(this,"Removed from favorites.", Toast.LENGTH_LONG).show();
+                    mMovieRepository.remove(mMovie);
+                }
+                else{
+                    setFavoriteIconColor(R.style.favorite);
+                    mMovie.setFavorite(true);
+                    Toast.makeText(this,"Added to favorites.", Toast.LENGTH_LONG).show();
+                    mMovieRepository.insert(mMovie);
+                }
                 break;
             case android.R.id.home:
                 this.finish();
@@ -120,6 +200,13 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void setFavoriteIconColor(int colorId){
+
+        final ContextThemeWrapper wrapper  = new ContextThemeWrapper(this, colorId);
+        final Drawable star = VectorDrawableCompat.create(getResources(), R.drawable.ic_baseline_star_rate_18px, wrapper.getTheme());
+        favoritesMenuItem.setIcon(star);
+    }
 
 
     /**
@@ -232,10 +319,39 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
 
 
+
     public void startReviewActivity(View view){
         Intent intent = new Intent(this, ReviewsActivity.class);
         intent.putExtra(EXTRA_ID, mMovie.getId());
 
         startActivity(intent);
     }
+
+
+    private class CheckFavoriteTask extends AsyncTask<Movie, Void, Boolean>{
+
+        FavoriteMoviesDao favoriteMoviesDao;
+
+        public CheckFavoriteTask(Application application){
+            favoriteMoviesDao = AppDatabase.getInstance(application.getApplicationContext()).favoriteMoviesDao();
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Movie... movies) {
+            return (favoriteMoviesDao.loadFavoriteMovieById(movies[0].getId()) != null);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            if(aBoolean) {
+                mMovie.setFavorite(true);
+                setFavoriteIconColor(R.style.favorite);
+            } else {
+                setFavoriteIconColor(R.style.white);
+            }
+        }
+    }
+
+
 }

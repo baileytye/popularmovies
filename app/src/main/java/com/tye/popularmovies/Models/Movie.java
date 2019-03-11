@@ -1,4 +1,4 @@
-package com.tye.popularmovies.TMDB;
+package com.tye.popularmovies.Models;
 
 
 import android.os.Parcel;
@@ -20,6 +20,9 @@ public class Movie implements Parcelable {
     private double vote_average;
     private double popularity;
 
+    @Ignore
+    private boolean favorite;
+
     public Movie(int id, String original_title, String poster_path, String overview,
                  double vote_average, String release_date, double popularity) {
         this.id = id;
@@ -29,8 +32,16 @@ public class Movie implements Parcelable {
         this.vote_average = vote_average;
         this.release_date = release_date;
         this.popularity = popularity;
+        favorite = false;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
 
     public int getId(){
         return id;

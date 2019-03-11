@@ -5,6 +5,8 @@
     <item
         android:id="@+id/menu_sort_by"
         android:title="@string/menu_sort_by"
+        android:icon="@drawable/ic_baseline_sort_24px"
+        android:tooltipText="@string/menu_sort_by"
         app:showAsAction="ifRoom">
 
         <menu>
@@ -16,9 +18,22 @@
             <item
                 android:id="@+id/menu_ratings"
                 android:title="@string/menu_ratings">
-
             </item>
+            <item
+                android:id="@+id/menu_favorites"
+                android:title="@string/menu_favorites">
+            </item>
+
         </menu>
     </item>
+
+
+
+    <item
+        android:id="@+id/menu_clear_favorites"
+        android:title="@string/clear_favorites">
+
+    </item>
+
 
 </menu>

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tye.popularmovies.R;
-import com.tye.popularmovies.TMDB.Review;
+import com.tye.popularmovies.Models.Review;
 
 import java.util.List;
 

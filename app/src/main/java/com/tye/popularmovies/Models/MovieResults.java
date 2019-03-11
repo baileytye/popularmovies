@@ -1,4 +1,4 @@
-package com.tye.popularmovies.TMDB;
+package com.tye.popularmovies.Models;
 
 import com.google.gson.annotations.SerializedName;
 

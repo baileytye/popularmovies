@@ -127,11 +127,14 @@
 
         <TextView
             android:id="@+id/tv_details_review"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:onClick="startReviewActivity"
-            android:text="TextView"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="Review"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintEnd_toEndOf="@+id/tv_details_synopsys"
             app:layout_constraintStart_toStartOf="@+id/label_reviews"
             app:layout_constraintTop_toBottomOf="@+id/label_reviews" />
 
@@ -140,13 +143,15 @@
             style="@style/detailsLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/label_trailers"
-            app:layout_constraintStart_toStartOf="@+id/tv_details_review"
-            app:layout_constraintTop_toBottomOf="@+id/tv_details_review" />
+            app:layout_constraintStart_toStartOf="@+id/label_see_more"
+            app:layout_constraintTop_toBottomOf="@+id/label_see_more" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_details_trailers"
+            android:scrollbarThumbVertical="@color/grey"
+            android:scrollbars="vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -164,6 +169,32 @@
             app:layout_constraintEnd_toEndOf="@+id/rv_details_trailers"
             app:layout_constraintStart_toStartOf="@+id/rv_details_trailers"
             app:layout_constraintTop_toTopOf="@+id/rv_details_trailers" />
+
+        <TextView
+            android:id="@+id/label_see_more"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:drawableRight="@drawable/ic_baseline_arrow_forward_24px"
+            android:gravity="center_vertical"
+            android:onClick="startReviewActivity"
+            android:text="More reviews"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/tv_details_review"
+            app:layout_constraintTop_toBottomOf="@+id/tv_details_review" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:gravity="center_vertical"
+            android:text="Read more"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/tv_details_review"
+            app:layout_constraintTop_toBottomOf="@+id/tv_details_review" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
