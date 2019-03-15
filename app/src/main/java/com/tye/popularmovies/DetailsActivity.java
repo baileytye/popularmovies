@@ -44,6 +44,7 @@ import com.tye.popularmovies.database.FavoriteMoviesDao;
 import java.util.List;
 
 //TODO: add bundle save state to save if its a favorite or not to prevent recalling database on rotation
+//TODO: save instance state so that rotation does not recall the database
 public class DetailsActivity extends AppCompatActivity implements TrailersAdapter.ListItemClickListener{
 
     private static final String TAG = "DetailsActivity";

@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                 getSupportActionBar().setTitle("Highest Rated Movies");
                 break;
             case R.id.menu_favorites:
+                //TODO: add no favorites text
                 retrieveMovieList(ORDER_FAVORITES);
                 getSupportActionBar().setTitle("Favorite Movies");
                 break;
