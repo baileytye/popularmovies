@@ -2,12 +2,10 @@ package com.tye.popularmovies;
 
 import android.content.Intent;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,12 +47,14 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     private static final int ORDER_FAVORITES = 2;
     private static final int ORDER_NONE = 3;
 
+    // Extra tags
     public static final String EXTRA_MOVIE = "extra-movie";
     private static final String EXTRA_CURRENT_ORDER = "current-order-extra";
 
     //Start current order none of above to force update data
     private static int currentOrder;
 
+    //Bind views
     @BindView(R.id.rv_movie_list) RecyclerView mRecyclerView;
     @BindView(R.id.pb_loading_movies) ProgressBar mProgressBar;
     @BindView(R.id.tv_error_message) TextView mErrorMessageTextView;
@@ -114,19 +114,26 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
             case R.id.menu_popular:
                 retrieveMovieList(ORDER_POPULAR);
-                getSupportActionBar().setTitle("Popular Movies");
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.label_popular_movies));
+                }
                 break;
             case R.id.menu_ratings:
                 retrieveMovieList(ORDER_RATINGS);
-                getSupportActionBar().setTitle("Highest Rated Movies");
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.label_highest_rated_movies));
+                }
                 break;
             case R.id.menu_favorites:
-                //TODO: add no favorites text
                 retrieveMovieList(ORDER_FAVORITES);
-                getSupportActionBar().setTitle("Favorite Movies");
+                if(getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.label_favorite_movies));
+                }
                 break;
             case R.id.menu_clear_favorites:
                 mMainViewModel.deleteTable();
+                showEmptyFavorites();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -151,15 +158,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private void setupViewModel() {
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mMainViewModel.getFavoriteMovies().observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> favoriteMovies) {
-                mFavorites = favoriteMovies;
-                Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
-                if(currentOrder == ORDER_FAVORITES) {
-                    mAdapter.setMovies(favoriteMovies);
-                    mAdapter.notifyDataSetChanged();
-                }
+        mMainViewModel.getFavoriteMovies().observe(this, favoriteMovies -> {
+            mFavorites = favoriteMovies;
+            Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
+            if(currentOrder == ORDER_FAVORITES) {
+                mAdapter.setMovies(favoriteMovies);
+                mAdapter.notifyDataSetChanged();
             }
         });
 
@@ -199,6 +203,17 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         currentOrder = 3;
     }
 
+    /**
+     * Show empty favorites
+     */
+    private void showEmptyFavorites(){
+
+        mErrorMessageTextView.setText(getString(R.string.add_favorites_to_see));
+        mErrorMessageTextView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+
+    }
 
 
     /**
@@ -221,7 +236,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             mAdapter.setMovies(mFavorites);
             mAdapter.notifyDataSetChanged();
             currentOrder = ORDER_FAVORITES;
-            showRecyclerView();
+
+            if(mFavorites.isEmpty()){
+                showEmptyFavorites();
+            } else {
+                showRecyclerView();
+            }
             return;
         }
 

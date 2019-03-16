@@ -12,20 +12,20 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
-public class MovieRepository {
+class MovieRepository {
 
 
     private static FavoriteMoviesDao favoriteMoviesDao;
 
-    private LiveData<List<Movie>> favoriteMovies;
+    private final LiveData<List<Movie>> favoriteMovies;
 
-    public MovieRepository(Application application){
+    MovieRepository(Application application){
         AppDatabase database = AppDatabase.getInstance(application.getApplicationContext());
         favoriteMoviesDao = database.favoriteMoviesDao();
         favoriteMovies = favoriteMoviesDao.loadFavoriteMoviesByName();
     }
 
-    public LiveData<List<Movie>> getFavoriteMovies(){
+    LiveData<List<Movie>> getFavoriteMovies(){
         Log.d("Repo ", "All data retrieved from database");
         return favoriteMovies;
     }
@@ -33,17 +33,17 @@ public class MovieRepository {
 
 
 
-    public void insert(final Movie movie){
+    void insert(final Movie movie){
         new InsertAsyncTask().execute(movie);
         Log.d("Repo ", "Movie " + movie.getOriginal_title() + " inserted into database ");
     }
 
-    public void remove(final Movie movie){
+    void remove(final Movie movie){
         Log.d("Repo ", "Movie " + movie.getOriginal_title() + " removed from database ");
         new RemoveAsyncTask().execute(movie);
     }
 
-    public void deleteTable(){
+    void deleteTable(){
         Log.d("Repo ", "Database cleared ");
         new ClearAsyncTask().execute();
     }

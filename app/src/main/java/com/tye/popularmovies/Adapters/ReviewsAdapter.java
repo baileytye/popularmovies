@@ -18,13 +18,10 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ItemView
 
     private int mNumberOfItems;
     private static List<Review> mReviews;
-    private final Context mContext;
 
 
-    public ReviewsAdapter(int mNumberOfItems, Context mContext) {
+    public ReviewsAdapter(int mNumberOfItems) {
         this.mNumberOfItems = mNumberOfItems;
-        this.mContext = mContext;
-
     }
 
 
@@ -60,13 +57,13 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ItemView
         return mNumberOfItems;
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder{
+    class ItemViewHolder extends RecyclerView.ViewHolder{
 
-        TextView mAuthor;
-        TextView mContent;
+        final TextView mAuthor;
+        final TextView mContent;
 
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
 
             mAuthor = itemView.findViewById(R.id.tv_author);
@@ -74,7 +71,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ItemView
         }
 
 
-        public void bind(int position) {
+        void bind(int position) {
             mAuthor.setText(mReviews.get(position).getAuthor());
             mContent.setText(mReviews.get(position).getContent());
         }

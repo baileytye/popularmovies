@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,7 +16,7 @@
         android:layout_marginEnd="8dp"
         android:gravity="center_vertical"
         android:singleLine="false"
-        android:text="Trailer Title"
+        android:text="@string/placeholder_trailer_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,5 +31,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_trailer_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_trailer_title"
-        app:srcCompat="@drawable/ic_baseline_play_circle_filled_white_48px" />
+        app:srcCompat="@drawable/ic_baseline_play_circle_filled_white_48px"
+        android:contentDescription="@string/content_description_play_trailer" />
 </androidx.constraintlayout.widget.ConstraintLayout>

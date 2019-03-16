@@ -1,32 +1,59 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
-    <string name="details_activity_label">Details</string>
-    <string name="reviews_activity_label">Reviews</string>
 
+    <!--Error messages-->
     <string name="error">Error: \u0020 </string>
     <string name="click_to_retry">\nClick to retry</string>
 
+    <!--URLs-->
     <string name="base_url_movies">https://api.themoviedb.org/</string>
     <string name="image_url">https://image.tmdb.org/t/p/w342</string>
+    <string name="youtube_base_url">https://www.youtube.com/watch?v=</string>
+
     <string name="already_in_order">Already in that order!</string>
 
+    <!--Menu labels-->
     <string name="menu_popular">Popular</string>
     <string name="menu_ratings">Top Rated</string>
     <string name="menu_sort_by">Sort by</string>
     <string name="menu_favorite">Favorite</string>
+    <string name="menu_favorites">Favorites</string>
+    <string name="menu_clear_favorites">Clear Favorites</string>
 
+    <!--Image descriptions-->
     <string name="image_description_movie_banner">movie banner</string>
+    <string name="expand_review_content_description">Expand review</string>
 
+    <!--Labels-->
     <string name="label_release_date">Release Date</string>
     <string name="label_rating">Rating</string>
     <string name="label_synopsys">Synopsys</string>
     <string name="label_trailers">Trailers</string>
     <string name="label_reviews">Reviews</string>
     <string name="label_review_author">Review by</string>
+    <string name="label_more_reviews">More reviews</string>
+    <string name="label_highest_rated_movies">Highest Rated Movies</string>
+    <string name="label_favorite_movies">Favorite Movies</string>
+    <string name="label_popular_movies">Popular Movies</string>
+    <string name="app_name">Popular Movies</string>
+    <string name="details_activity_label">Details</string>
+    <string name="reviews_activity_label">Reviews</string>
+    <string name="review_by">Review by</string>
 
-    <string name="added_to_favorites">Added to favorites!</string>
-    <string name="clear_favorites">Clear Favorites</string>
-    <string name="menu_favorites">Favorites</string>
+    <!--Placeholders-->
+    <string name="placeholder_title">TITLE</string>
+    <string name="placeholder_release">release</string>
+    <string name="placeholder_rating">1/10</string>
+
+    <!--User messages-->
     <string name="details_no_reviews_yet">No reviews yet!</string>
+    <string name="remove_from_favorite">Removed from favorites!</string>
+    <string name="add_to_favorites">Added to favorites!</string>
+    <string name="no_trailers_yet">No trailers yet!</string>
+    <string name="open_with">Open With</string>
+    <string name="add_favorites_to_see">Add some favorites to see them here!</string>
+    <string name="placeholder_trailer_title">Trailer Title</string>
+    <string name="content_description_play_trailer">play trailer</string>
+    <string name="placeholder_author">Author</string>
+    <string name="placeholder_review">review</string>
 
 </resources>

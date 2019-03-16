@@ -19,7 +19,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -43,18 +42,18 @@ import com.tye.popularmovies.database.FavoriteMoviesDao;
 
 import java.util.List;
 
-//TODO: add bundle save state to save if its a favorite or not to prevent recalling database on rotation
-//TODO: save instance state so that rotation does not recall the database
 public class DetailsActivity extends AppCompatActivity implements TrailersAdapter.ListItemClickListener{
 
-    private static final String TAG = "DetailsActivity";
+    private static final String FAVORITE_BUNDLE = "favorite-bundle";
+    public static final String EXTRA_ID = "extra_id";
+
+
     @BindView(R.id.tv_details_title) TextView mTitleTextView;
     @BindView(R.id.tv_details_release_date) TextView mReleaseDateTextView;
     @BindView(R.id.tv_details_rating) TextView mRatingTextView;
     @BindView(R.id.tv_details_synopsys) TextView mSynopsysTextView;
     @BindView(R.id.tv_details_error_message) TextView mErrorMessageTextView;
     @BindView(R.id.tv_details_review) ExpandableTextView mReviewTextView;
-    //@BindView(R.id.tv_read_more_button) TextView mReadMoreTextView;
     @BindView(R.id.label_see_more) TextView mSeeMoreReviewsTextView;
 
     @BindView(R.id.pb_loading_trailers) ProgressBar mProgressBar;
@@ -70,7 +69,9 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
     private TrailersAdapter mAdapter;
     private MovieRepository mMovieRepository;
 
-    public static final String EXTRA_ID = "extra_id";
+    private int isFavorite = -1;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +97,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
             }
         }
 
-        mAdapter = new TrailersAdapter(0, this, this);
+        if(savedInstanceState != null){
+            isFavorite = savedInstanceState.getInt(FAVORITE_BUNDLE);
+        }
+
+        mAdapter = new TrailersAdapter(0, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -107,6 +112,12 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         retrieveTrailers();
 
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(FAVORITE_BUNDLE,isFavorite);
+        super.onSaveInstanceState(outState);
     }
 
     private void retrieveReviews(){
@@ -143,7 +154,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
                 if (response.body() != null) {
                     mReviews = response.body().getReviews();
                     if(!mReviews.isEmpty()){
-                        String reviewText = "Review by " + mReviews.get(0).getAuthor() + ":\n"  + mReviews.get(0).getContent();
+                        String reviewText = getString(R.string.review_by) + mReviews.get(0).getAuthor() + ":\n"  + mReviews.get(0).getContent();
                         mReviewTextView.setText(reviewText);
                         if(mReviews.size() > 1){
                             mSeeMoreReviewsTextView.setVisibility(View.VISIBLE);
@@ -176,8 +187,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
         mFavoritesMenuItem = menu.findItem(R.id.menu_details_favorite);
 
-        new CheckFavoriteTask(getApplication()).execute(mMovie);
-
+        if(isFavorite == -1) {
+            new CheckFavoriteTask(getApplication()).execute(mMovie);
+        } else {
+            setFavoriteIconColor();
+        }
         return true;
     }
 
@@ -189,16 +203,16 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         switch (itemId) {
 
             case R.id.menu_details_favorite:
-                if(mMovie.isFavorite()){
-                    mMovie.setFavorite(false);
-                    setFavoriteIconColor(R.style.white);
-                    Toast.makeText(this,"Removed from favorites.", Toast.LENGTH_LONG).show();
+                if(isFavorite == 1){
+                    isFavorite = 0;
+                    setFavoriteIconColor();
+                    Toast.makeText(this,getString(R.string.remove_from_favorite), Toast.LENGTH_LONG).show();
                     mMovieRepository.remove(mMovie);
                 }
                 else{
-                    setFavoriteIconColor(R.style.favorite);
-                    mMovie.setFavorite(true);
-                    Toast.makeText(this,"Added to favorites.", Toast.LENGTH_LONG).show();
+                    isFavorite = 1;
+                    setFavoriteIconColor();
+                    Toast.makeText(this,getString(R.string.add_to_favorites), Toast.LENGTH_LONG).show();
                     mMovieRepository.insert(mMovie);
                 }
                 break;
@@ -210,8 +224,15 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         return super.onOptionsItemSelected(item);
     }
 
-    public void setFavoriteIconColor(int colorId){
-        final ContextThemeWrapper wrapper  = new ContextThemeWrapper(this, colorId);
+    private void setFavoriteIconColor(){
+
+        final ContextThemeWrapper wrapper;
+
+        if(isFavorite == 1){
+            wrapper  = new ContextThemeWrapper(this, R.style.favorite);
+        } else {
+            wrapper  = new ContextThemeWrapper(this, R.style.white);
+        }
         final Drawable star = VectorDrawableCompat.create(getResources(), R.drawable.ic_baseline_star_rate_18px, wrapper.getTheme());
         mFavoritesMenuItem.setIcon(star);
     }
@@ -261,8 +282,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
                     mTrailers = response.body().getTrailers();
                     mAdapter.setTrailers(mTrailers);
                     mAdapter.notifyDataSetChanged();
-                    showRecyclerView();
-                    //TODO: Add if there are no trailers show message
+                    if(mTrailers.isEmpty()){
+                        showNoTrailers();
+                    } else {
+                        showRecyclerView();
+                    }
 
                 } else {
                     Log.e("Movie List Error", "Movie list is null");
@@ -309,13 +333,23 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Shows no trailers
+     */
+    private  void showNoTrailers(){
+        mErrorMessageTextView.setText(getString(R.string.no_trailers_yet));
+        mErrorMessageTextView.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+    }
+
 
     @Override
     public void onListItemClick(int position) {
-        String url = "https://www.youtube.com/watch?v=" + mTrailers.get(position).getKey();
-        Log.d("YOUTUBE: ", url);
+        String url = getString(R.string.youtube_base_url) + mTrailers.get(position).getKey();
+
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        Intent chooser = Intent.createChooser(youtubeIntent, "Open With");
+        Intent chooser = Intent.createChooser(youtubeIntent, getString(R.string.open_with));
 
         if(youtubeIntent.resolveActivity(getPackageManager()) != null){
             startActivity(chooser);
@@ -332,27 +366,27 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
     private class CheckFavoriteTask extends AsyncTask<Movie, Void, Boolean>{
 
-        FavoriteMoviesDao favoriteMoviesDao;
+        final FavoriteMoviesDao favoriteMoviesDao;
 
-        public CheckFavoriteTask(Application application){
+        CheckFavoriteTask(Application application){
             favoriteMoviesDao = AppDatabase.getInstance(application.getApplicationContext()).favoriteMoviesDao();
         }
 
 
         @Override
         protected Boolean doInBackground(Movie... movies) {
-            Log.d("Database: ", "Loading favorite message by ID from database");
+            Log.d("CheckFavoriteTask: ", "Loading favorite message by ID from database");
             return (favoriteMoviesDao.loadFavoriteMovieById(movies[0].getId()) != null);
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             if(aBoolean) {
-                mMovie.setFavorite(true);
-                setFavoriteIconColor(R.style.favorite);
+                isFavorite = 1;
             } else {
-                setFavoriteIconColor(R.style.white);
+                isFavorite = 0;
             }
+            setFavoriteIconColor();
         }
     }
 

@@ -13,15 +13,13 @@ public class Movie implements Parcelable {
 
     @PrimaryKey
     private int id;
-    private String original_title;
-    private String poster_path;
-    private String overview;
-    private String release_date;
-    private double vote_average;
+    private final String original_title;
+    private final String poster_path;
+    private final String overview;
+    private final String release_date;
+    private final double vote_average;
     private double popularity;
 
-    @Ignore
-    private boolean favorite;
 
     public Movie(int id, String original_title, String poster_path, String overview,
                  double vote_average, String release_date, double popularity) {
@@ -32,17 +30,7 @@ public class Movie implements Parcelable {
         this.vote_average = vote_average;
         this.release_date = release_date;
         this.popularity = popularity;
-        favorite = false;
     }
-
-    public boolean isFavorite() {
-        return favorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
-    }
-
     public int getId(){
         return id;
     }

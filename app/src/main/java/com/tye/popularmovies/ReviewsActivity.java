@@ -27,9 +27,9 @@ public class ReviewsActivity extends AppCompatActivity{
 
     @BindView(R.id.rv_reviews) RecyclerView mRecyclerView;
 
-    int id;
-    ReviewsAdapter mAdapter;
-    List<Review> mReviews;
+    private int id;
+    private ReviewsAdapter mAdapter;
+    private List<Review> mReviews;
 
 
     @Override
@@ -54,7 +54,7 @@ public class ReviewsActivity extends AppCompatActivity{
             }
         }
 
-        mAdapter = new ReviewsAdapter(0,this);
+        mAdapter = new ReviewsAdapter(0);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);

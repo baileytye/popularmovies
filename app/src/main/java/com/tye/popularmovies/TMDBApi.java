@@ -9,7 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-public interface TMDBApi {
+interface TMDBApi {
 
     String API_KEY = BuildConfig.API_KEY;
 

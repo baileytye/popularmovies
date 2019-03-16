@@ -5,13 +5,11 @@ import com.tye.popularmovies.Models.Movie;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.Update;
 
 @Dao
 public interface FavoriteMoviesDao {
@@ -27,9 +25,6 @@ public interface FavoriteMoviesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFavoriteMovie(Movie movie);
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateFavoriteMovie(Movie movie);
 
     @Delete
     void deleteFavoriteMovie(Movie movie);

@@ -19,12 +19,10 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemVi
     final private TrailersAdapter.ListItemClickListener mOnClickListener;
     private int mNumberOfItems;
     private static List<Trailer> mTrailers;
-    private final Context mContext;
 
 
-    public TrailersAdapter(int mNumberOfItems, Context mContext, ListItemClickListener listItemClickListener) {
+    public TrailersAdapter(int mNumberOfItems, ListItemClickListener listItemClickListener) {
         this.mNumberOfItems = mNumberOfItems;
-        this.mContext = mContext;
         this.mOnClickListener = listItemClickListener;
     }
 
@@ -67,10 +65,10 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemVi
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView mTrailerTitle;
+        final TextView mTrailerTitle;
 
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
 
             mTrailerTitle = itemView.findViewById(R.id.tv_trailer_title);
@@ -82,7 +80,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemVi
             mOnClickListener.onListItemClick(getAdapterPosition());
         }
 
-        public void bind(int position) {
+        void bind(int position) {
             mTrailerTitle.setText(mTrailers.get(position).getName());
         }
     }
