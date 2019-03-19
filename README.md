@@ -1,4 +1,4 @@
-# Popular Movies Stage 1
+# Popular Movies Stage 2
 
 To use, gradle.properties must be added with the following:  
 
@@ -10,8 +10,8 @@ This is an educational app for the Android Nanodegree which displays movies fetc
 
 APIs Used:  
 The Movie Database.  
-Retrofit2.  
-GSON Converter.  
+Retrofit2.    
 Picaso.  
-Butterknife.  
+Butterknife. 
+ExpandableTextView.
 
