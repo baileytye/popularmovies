@@ -78,6 +78,9 @@ public class ReviewsActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Retrieves reviews from TMDB in background thread
+     */
     private void retrieveReviews(){
 
         //showProgressBar();

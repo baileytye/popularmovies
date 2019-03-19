@@ -21,6 +21,7 @@ import com.tye.popularmovies.Adapters.MovieListAdapter;
 import com.tye.popularmovies.Models.Movie;
 import com.tye.popularmovies.Models.MovieResults;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,8 +34,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends AppCompatActivity implements MovieListAdapter.ListItemClickListener{
-
-
 
     // Constant for logging
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     // Extra tags
     public static final String EXTRA_MOVIE = "extra-movie";
     private static final String EXTRA_CURRENT_ORDER = "current-order-extra";
+    public static final String EXTRA_FAVORITES = "extra-favorites";
 
     //Start current order none of above to force update data
     private static int currentOrder;
@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     private MovieListAdapter mAdapter;
     private List<Movie> mMovies;
-    private List<Movie> mFavorites;
+
+    //Had to be array list to be put in bundle
+    private ArrayList<Movie> mFavorites;
     private MainViewModel mMainViewModel;
 
     @Override
@@ -83,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         setupViewModel();
 
         if(savedInstanceState != null) {
+            if(savedInstanceState.containsKey(EXTRA_FAVORITES)) {
+                mFavorites = savedInstanceState.getParcelableArrayList(EXTRA_FAVORITES);
+            }
             if (savedInstanceState.containsKey(EXTRA_CURRENT_ORDER)) {
                 retrieveMovieList(savedInstanceState.getInt(EXTRA_CURRENT_ORDER));
             }
@@ -91,13 +96,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         }
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_CURRENT_ORDER, currentOrder);
+        outState.putParcelableArrayList(EXTRA_FAVORITES, mFavorites);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -139,9 +143,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
     @Override
     public void onListItemClick(int position) {
 
@@ -155,11 +156,13 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         startActivity(intent);
     }
 
-
+    /**
+     * Sets up the view model
+     */
     private void setupViewModel() {
         mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mMainViewModel.getFavoriteMovies().observe(this, favoriteMovies -> {
-            mFavorites = favoriteMovies;
+            mFavorites = new ArrayList<>(favoriteMovies);
             Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
             if(currentOrder == ORDER_FAVORITES) {
                 mAdapter.setMovies(favoriteMovies);
@@ -168,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         });
 
     }
-
 
     /**
      * Shows the progress bar and hides the recycler view/error message
@@ -215,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     }
 
-
     /**
      * Retrieves movie list from server and informs adapter that data has changed
      * @param order order for the movies to be retrieved
@@ -245,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             return;
         }
 
-
         //Use retrofit to get data from movie database
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.base_url_movies))
@@ -261,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             call = tmdbApi.getMoviesPopular();
         else
             call = tmdbApi.getMoviesRatings();
-
 
          //Retrieve data from server and then tell the adapter that data has changed
         call.enqueue(new Callback<MovieResults>() {
@@ -293,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
     }
 
-
     /**
      * Reset movie order, try to retrieve movies again
      * @param v clicked view
@@ -302,6 +300,5 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         currentOrder = 3;
         retrieveMovieList(ORDER_POPULAR);
     }
-
-
+    
 }

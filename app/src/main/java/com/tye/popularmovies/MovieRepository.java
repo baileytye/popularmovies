@@ -30,9 +30,6 @@ class MovieRepository {
         return favoriteMovies;
     }
 
-
-
-
     void insert(final Movie movie){
         new InsertAsyncTask().execute(movie);
         Log.d("Repo ", "Movie " + movie.getOriginal_title() + " inserted into database ");
@@ -47,8 +44,6 @@ class MovieRepository {
         Log.d("Repo ", "Database cleared ");
         new ClearAsyncTask().execute();
     }
-
-
 
 
     private static class InsertAsyncTask extends AsyncTask<Movie,Void,Void>{

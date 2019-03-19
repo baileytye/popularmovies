@@ -19,17 +19,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ItemView
     private int mNumberOfItems;
     private static List<Review> mReviews;
 
-
     public ReviewsAdapter(int mNumberOfItems) {
         this.mNumberOfItems = mNumberOfItems;
     }
-
-
-    public void setReviews(List<Review> reviews){
-        mReviews = reviews;
-        mNumberOfItems = reviews.size();
-    }
-
 
     @NonNull
     @Override
@@ -51,10 +43,18 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ItemView
         }
     }
 
-
     @Override
     public int getItemCount() {
         return mNumberOfItems;
+    }
+
+    /**
+     * Setter for reviews, also sets numberOfItems
+     * @param reviews reviews tos et
+     */
+    public void setReviews(List<Review> reviews){
+        mReviews = reviews;
+        mNumberOfItems = reviews.size();
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder{

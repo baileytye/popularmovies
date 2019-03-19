@@ -1,5 +1,8 @@
 package com.tye.popularmovies.Models;
 
+/**
+ * POJO for a review received from server.
+ */
 public class Review {
 
     private String author;

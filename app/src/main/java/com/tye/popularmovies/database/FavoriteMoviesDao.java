@@ -14,9 +14,6 @@ import androidx.room.Query;
 @Dao
 public interface FavoriteMoviesDao {
 
-    @Query("SELECT * FROM movie ORDER BY popularity")
-    LiveData<List<Movie>> loadFavoriteMoviesByPopularity();
-
     @Query("SELECT * FROM movie ORDER BY original_title")
     LiveData<List<Movie>> loadFavoriteMoviesByName();
 

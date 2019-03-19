@@ -20,18 +20,10 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemVi
     private int mNumberOfItems;
     private static List<Trailer> mTrailers;
 
-
     public TrailersAdapter(int mNumberOfItems, ListItemClickListener listItemClickListener) {
         this.mNumberOfItems = mNumberOfItems;
         this.mOnClickListener = listItemClickListener;
     }
-
-
-    public void setTrailers(List<Trailer> trailers){
-        mTrailers = trailers;
-        mNumberOfItems = trailers.size();
-    }
-
 
     @NonNull
     @Override
@@ -61,6 +53,15 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ItemVi
     @Override
     public int getItemCount() {
         return mNumberOfItems;
+    }
+
+    /**
+     * Setter for trailers, also sets numberOfItems
+     * @param trailers trailers to set
+     */
+    public void setTrailers(List<Trailer> trailers){
+        mTrailers = trailers;
+        mNumberOfItems = trailers.size();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

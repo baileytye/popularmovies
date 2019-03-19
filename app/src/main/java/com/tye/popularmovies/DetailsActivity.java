@@ -44,10 +44,11 @@ import java.util.List;
 
 public class DetailsActivity extends AppCompatActivity implements TrailersAdapter.ListItemClickListener{
 
+    //Tags
     private static final String FAVORITE_BUNDLE = "favorite-bundle";
     public static final String EXTRA_ID = "extra_id";
 
-
+    //Bind views
     @BindView(R.id.tv_details_title) TextView mTitleTextView;
     @BindView(R.id.tv_details_release_date) TextView mReleaseDateTextView;
     @BindView(R.id.tv_details_rating) TextView mRatingTextView;
@@ -62,16 +63,14 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
     @BindView(R.id.rv_details_trailers) RecyclerView mRecyclerView;
 
+    //Member variables
     private MenuItem mFavoritesMenuItem;
     private Movie mMovie;
     private List<Review> mReviews;
     private List<Trailer> mTrailers;
     private TrailersAdapter mAdapter;
     private MovieRepository mMovieRepository;
-
     private int isFavorite = -1;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,64 +119,16 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         super.onSaveInstanceState(outState);
     }
 
-    private void retrieveReviews(){
+    @Override
+    public void onListItemClick(int position) {
+        String url = getString(R.string.youtube_base_url) + mTrailers.get(position).getKey();
 
-        int id = mMovie.getId();
+        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        Intent chooser = Intent.createChooser(youtubeIntent, getString(R.string.open_with));
 
-        //showProgressBar();
-
-        //Use retrofit to get data from movie database
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.base_url_movies))
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        TMDBApi tmdbApi = retrofit.create(TMDBApi.class);
-
-        if(id == -1){
-            return;
+        if(youtubeIntent.resolveActivity(getPackageManager()) != null){
+            startActivity(chooser);
         }
-        Call<ReviewResults> call = tmdbApi.getReviews(id);
-
-
-        //Retrieve data from server and then tell the adapter that data has changed
-        call.enqueue(new Callback<ReviewResults>() {
-
-            @Override
-            public void onResponse(Call<ReviewResults> call, Response<ReviewResults> response) {
-                if(!response.isSuccessful()){
-
-                    Log.e("HTTP Request Error", String.valueOf(response.code()));
-                    //showErrorMessage(String.valueOf(response.code()));
-                    return;
-                }
-                if (response.body() != null) {
-                    mReviews = response.body().getReviews();
-                    if(!mReviews.isEmpty()){
-                        String reviewText = getString(R.string.review_by) + mReviews.get(0).getAuthor() + ":\n"  + mReviews.get(0).getContent();
-                        mReviewTextView.setText(reviewText);
-                        if(mReviews.size() > 1){
-                            mSeeMoreReviewsTextView.setVisibility(View.VISIBLE);
-                        }
-
-                    } else {
-                        mReviewTextView.setText(getString(R.string.details_no_reviews_yet));
-                        mSeeMoreReviewsTextView.setVisibility(View.INVISIBLE);
-                    }
-                    //showRecyclerView();
-
-                } else {
-                    Log.e("Movie List Error", "Movie list is null");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReviewResults> call, Throwable t) {
-                //showErrorMessage(t.getMessage());
-                Log.e("TMDB Call Error", t.getMessage());
-            }
-        });
-
 
     }
 
@@ -224,6 +175,70 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Retrieve reviews from server and displays them
+     */
+    private void retrieveReviews(){
+
+        int id = mMovie.getId();
+
+        //Use retrofit to get data from movie database
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.base_url_movies))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        TMDBApi tmdbApi = retrofit.create(TMDBApi.class);
+
+        if(id == -1){
+            return;
+        }
+        Call<ReviewResults> call = tmdbApi.getReviews(id);
+
+
+        //Retrieve data from server and then tell the adapter that data has changed
+        call.enqueue(new Callback<ReviewResults>() {
+
+            @Override
+            public void onResponse(Call<ReviewResults> call, Response<ReviewResults> response) {
+                if(!response.isSuccessful()){
+
+                    Log.e("HTTP Request Error", String.valueOf(response.code()));
+                    showErrorMessage(String.valueOf(response.code()));
+                    return;
+                }
+                if (response.body() != null) {
+                    mReviews = response.body().getReviews();
+                    if(!mReviews.isEmpty()){
+                        String reviewText = getString(R.string.review_by) + mReviews.get(0).getAuthor() + ":\n"  + mReviews.get(0).getContent();
+                        mReviewTextView.setText(reviewText);
+                        if(mReviews.size() > 1){
+                            mSeeMoreReviewsTextView.setVisibility(View.VISIBLE);
+                        }
+
+                    } else {
+                        mReviewTextView.setText(getString(R.string.details_no_reviews_yet));
+                        mSeeMoreReviewsTextView.setVisibility(View.INVISIBLE);
+                    }
+
+                } else {
+                    Log.e("Movie List Error", "Movie list is null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReviewResults> call, Throwable t) {
+                showErrorMessage(t.getMessage());
+                Log.e("TMDB Call Error", t.getMessage());
+            }
+        });
+
+
+    }
+
+    /**
+     * Sets the color of the favorites icon based on what isFavorite is
+     */
     private void setFavoriteIconColor(){
 
         final ContextThemeWrapper wrapper;
@@ -251,6 +266,9 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mRatingTextView.setText(String.valueOf(mMovie.getVote_average()) + "/10");
     }
 
+    /**
+     * Retrieves trailers from server in background thread
+     */
     private void retrieveTrailers(){
 
         showProgressBar();
@@ -343,20 +361,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
-
-    @Override
-    public void onListItemClick(int position) {
-        String url = getString(R.string.youtube_base_url) + mTrailers.get(position).getKey();
-
-        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        Intent chooser = Intent.createChooser(youtubeIntent, getString(R.string.open_with));
-
-        if(youtubeIntent.resolveActivity(getPackageManager()) != null){
-            startActivity(chooser);
-        }
-
-    }
-
     public void startReviewActivity(View view){
         Intent intent = new Intent(this, ReviewsActivity.class);
         intent.putExtra(EXTRA_ID, mMovie.getId());
@@ -364,6 +368,9 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         startActivity(intent);
     }
 
+    /**
+     * Checks database to see if item is favorited and updates icon in background thread
+     */
     private class CheckFavoriteTask extends AsyncTask<Movie, Void, Boolean>{
 
         final FavoriteMoviesDao favoriteMoviesDao;

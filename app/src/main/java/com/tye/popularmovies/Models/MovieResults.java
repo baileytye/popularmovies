@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * POJO to retrieve list of Movies from server
+ */
 public class MovieResults {
 
     @SerializedName("results")

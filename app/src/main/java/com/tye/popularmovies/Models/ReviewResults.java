@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+/**
+ * POJO for list of reviews from server
+ */
 public class ReviewResults {
 
     @SerializedName("results")

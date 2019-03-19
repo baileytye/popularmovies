@@ -1,5 +1,8 @@
 package com.tye.popularmovies.Models;
 
+/**
+ * POJO for trailer item received from server
+ */
 public class Trailer {
 
     private String key;

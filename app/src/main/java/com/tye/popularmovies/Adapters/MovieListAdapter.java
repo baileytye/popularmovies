@@ -25,27 +25,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
 
     private final Context mContext;
 
-
     public MovieListAdapter(int numberOfItems, ListItemClickListener listener, Context context){
         mNumberOfItems = numberOfItems;
         mOnClickListener = listener;
         mContext = context;
     }
-
-
-    /**
-     * Setter for data list movies
-     * @param movies data to assign
-     */
-    public void setMovies(List<Movie> movies){
-        mMovies = movies;
-        if(mMovies != null){
-            mNumberOfItems = mMovies.size();
-        } else {
-            mNumberOfItems = 0;
-        }
-    }
-
 
     @NonNull
     @Override
@@ -75,11 +59,22 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
     }
 
 
+    /**
+     * Setter for data list movies
+     * @param movies data to assign
+     */
+    public void setMovies(List<Movie> movies){
+        mMovies = movies;
+        if(mMovies != null){
+            mNumberOfItems = mMovies.size();
+        } else {
+            mNumberOfItems = 0;
+        }
+    }
 
     public interface ListItemClickListener{
         void onListItemClick(int position);
     }
-
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 

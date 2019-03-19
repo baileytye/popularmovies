@@ -8,6 +8,10 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+/**
+ * POJO to contain a movie item in the database, and from server.
+ * Implements parcelable to allow for passing between activities.
+ */
 @Entity(tableName = "movie")
 public class Movie implements Parcelable {
 
