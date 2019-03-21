@@ -42,7 +42,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
         View view = inflater.inflate(layoutIdForListItem,viewGroup,false);
 
         return new ItemViewHolder(view);
-
     }
 
     @Override

@@ -98,7 +98,6 @@ public class ReviewsActivity extends AppCompatActivity{
         }
         Call<ReviewResults> call = tmdbApi.getReviews(id);
 
-
         //Retrieve data from server and then tell the adapter that data has changed
         call.enqueue(new Callback<ReviewResults>() {
 

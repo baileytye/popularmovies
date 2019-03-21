@@ -195,7 +195,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
         }
         Call<ReviewResults> call = tmdbApi.getReviews(id);
 
-
         //Retrieve data from server and then tell the adapter that data has changed
         call.enqueue(new Callback<ReviewResults>() {
 
@@ -281,9 +280,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersAdapte
 
         TMDBApi tmdbApi = retrofit.create(TMDBApi.class);
 
-
         Call<TrailerResults> call = tmdbApi.getTrailers(mMovie.getId());
-
 
         //Retrieve data from server and then tell the adapter that data has changed
         call.enqueue(new Callback<TrailerResults>() {

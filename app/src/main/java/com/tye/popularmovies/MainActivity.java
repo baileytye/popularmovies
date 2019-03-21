@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     public static final String EXTRA_MOVIE = "extra-movie";
     private static final String EXTRA_CURRENT_ORDER = "current-order-extra";
     public static final String EXTRA_FAVORITES = "extra-favorites";
+    public static final String EXTRA_SCROLL_POSITION = "extra-scroll-position";
+    private static final String EXTRA_MOVIES = "extra-movies";
 
     //Start current order none of above to force update data
     private static int currentOrder;
@@ -60,11 +62,12 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     @BindView(R.id.tv_error_message) TextView mErrorMessageTextView;
 
     private MovieListAdapter mAdapter;
-    private List<Movie> mMovies;
+    private ArrayList<Movie> mMovies;
 
     //Had to be array list to be put in bundle
     private ArrayList<Movie> mFavorites;
     private MainViewModel mMainViewModel;
+    private GridLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
         mAdapter = new MovieListAdapter(0,this, this);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
-        mRecyclerView.setLayoutManager(layoutManager);
+        mLayoutManager = new GridLayoutManager(this,3);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -88,19 +91,35 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             if(savedInstanceState.containsKey(EXTRA_FAVORITES)) {
                 mFavorites = savedInstanceState.getParcelableArrayList(EXTRA_FAVORITES);
             }
+            if(savedInstanceState.containsKey(EXTRA_MOVIES)){
+                mMovies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
+            }
             if (savedInstanceState.containsKey(EXTRA_CURRENT_ORDER)) {
-                retrieveMovieList(savedInstanceState.getInt(EXTRA_CURRENT_ORDER));
+                currentOrder = savedInstanceState.getInt(EXTRA_CURRENT_ORDER);
+                if(currentOrder == ORDER_FAVORITES){
+                    mAdapter.setMovies(mFavorites);
+                } else {
+                    mAdapter.setMovies(mMovies);
+                }
+                showRecyclerView();
+                updateTitle();
+            }
+            if(savedInstanceState.containsKey(EXTRA_SCROLL_POSITION)){
+                mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable(EXTRA_SCROLL_POSITION));
             }
         } else {
             retrieveMovieList(ORDER_POPULAR);
         }
     }
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_CURRENT_ORDER, currentOrder);
         outState.putParcelableArrayList(EXTRA_FAVORITES, mFavorites);
+        outState.putParcelableArrayList(EXTRA_MOVIES, mMovies);
+        outState.putParcelable(EXTRA_SCROLL_POSITION, mLayoutManager.onSaveInstanceState());
     }
 
     @Override
@@ -118,21 +137,15 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
 
             case R.id.menu_popular:
                 retrieveMovieList(ORDER_POPULAR);
-                if(getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(getString(R.string.label_popular_movies));
-                }
+                updateTitle();
                 break;
             case R.id.menu_ratings:
                 retrieveMovieList(ORDER_RATINGS);
-                if(getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(getString(R.string.label_highest_rated_movies));
-                }
+                updateTitle();
                 break;
             case R.id.menu_favorites:
                 retrieveMovieList(ORDER_FAVORITES);
-                if(getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(getString(R.string.label_favorite_movies));
-                }
+                updateTitle();
                 break;
             case R.id.menu_clear_favorites:
                 mMainViewModel.deleteTable();
@@ -173,6 +186,21 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
     }
 
     /**
+     * Updates the actionbar title based on the current order
+     */
+    private void updateTitle() {
+        if(getSupportActionBar() != null){
+            if(currentOrder == ORDER_FAVORITES){
+                getSupportActionBar().setTitle(getString(R.string.label_favorite_movies));
+            } else if (currentOrder == ORDER_POPULAR){
+                getSupportActionBar().setTitle(getString(R.string.label_popular_movies));
+            } else if (currentOrder == ORDER_RATINGS){
+                getSupportActionBar().setTitle(getString(R.string.label_highest_rated_movies));
+            }
+        }
+    }
+
+    /**
      * Shows the progress bar and hides the recycler view/error message
      */
     private void showProgressBar(){
@@ -185,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
      * Shows the recycler view and hides the progress bar/error message
      */
     private void showRecyclerView(){
+        mAdapter.notifyDataSetChanged();
         mErrorMessageTextView.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
@@ -243,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
             } else {
                 showRecyclerView();
             }
+            mLayoutManager.scrollToPositionWithOffset(0, 0);
             return;
         }
 
@@ -274,9 +304,9 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
                     return;
                 }
                 if (response.body() != null) {
-                    mMovies = response.body().getMovies();
+                    mMovies = new ArrayList<>(response.body().getMovies());
                     mAdapter.setMovies(mMovies);
-                    mAdapter.notifyDataSetChanged();
+                    mLayoutManager.scrollToPositionWithOffset(0, 0);
                     showRecyclerView();
                 } else {
                     Log.e("Movie List Error", "Movie list is null");
@@ -300,5 +330,5 @@ public class MainActivity extends AppCompatActivity implements MovieListAdapter.
         currentOrder = 3;
         retrieveMovieList(ORDER_POPULAR);
     }
-    
+
 }
